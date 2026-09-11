@@ -1,3 +1,4 @@
+import os
 import gradio as gr
 import tensorflow as tf
 import numpy as np
@@ -33,12 +34,20 @@ def predict_image(img):
 
     return results
 
+sample_dir = "samples"
+examples = [
+    [os.path.join(sample_dir, f)]
+    for f in sorted(os.listdir(sample_dir))
+    if f.lower().endswith((".jpg", ".jpeg", ".png"))
+] if os.path.exists(sample_dir) else None
+
 interface = gr.Interface(
     fn=predict_image,
     inputs=gr.Image(type="pil", label="อัปโหลดรูปภาพ"),
     outputs=gr.Label(num_top_classes=3, label="ผลการทำนาย"),
     title="Scene Classification",
-    description="อัปโหลดรูปภาพเพื่อทำนายฉาก (Scene)",
+    description="อัปโหลดรูปภาพเพื่อทำนายฉาก (Scene) หรือคลิกเลือกภาพตัวอย่างด้านล่าง",
+    examples=examples,
     theme=gr.themes.Soft()
 )
 
